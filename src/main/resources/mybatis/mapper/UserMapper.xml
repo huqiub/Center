@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jbr.mapper.DeviceMapper" >
+    <resultMap id="BaseResultMap" type="com.jbr.entity.DeviceEntity" >
+        <id column="id" property="id" javaType="long" jdbcType="BIGINT" />
+        <result column="binding" property="binding" javaType="int" jdbcType="INTEGER" />
+        <result column="create_time" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result column="first_login_time" property="firstLoginTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result column="channal_id" property="channalId" javaType="String" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id, binding, create_time, first_login_time, channal_id
+    </sql>
+
+    <select id="getAll" resultMap="BaseResultMap"  >
+       SELECT 
+       <include refid="Base_Column_List" />
+	   FROM device
+    </select>
+
+    <select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap" >
+        SELECT 
+       <include refid="Base_Column_List" />
+	   FROM device
+	   WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.jbr.entity.DeviceEntity" >
+       INSERT INTO 
+       		device
+       		(id, binding, create_time, channal_id) 
+       	VALUES
+       		(#{id}, #{binding}, now(),#{channalId})
+    </insert>
+    
+     <insert id="insertBatch" parameterType="java.util.List">
+       INSERT INTO 
+       		device
+       		(id, binding, create_time, channal_id) 
+       	VALUES
+       	<foreach collection="list" item="item" index="index" separator="," >
+	        (#{item.id},#{item.binding},now(),#{item.channalId})
+    	</foreach>
+    </insert>
+    
+    
+    
+    <update id="update" parameterType="java.lang.Long" >
+       UPDATE 
+       		device 
+       SET 
+       	first_Login_Time = now()
+       WHERE 
+       		id = #{id}
+    </update>
+    
+    <delete id="delete" parameterType="java.lang.Long" >
+       DELETE FROM
+       		 device 
+       WHERE 
+       		 id =#{id}
+    </delete>
+
+</mapper>
