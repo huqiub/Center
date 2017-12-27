@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jbr.mapper.TaskMapper" >
+    <resultMap id="BaseResultMap" type="com.jbr.entity.TaskEntity" >
+        <id column="id" property="id" javaType="String" jdbcType="VARCHAR" />
+        <result column="device_id" property="deviceId" javaType="long" jdbcType="BIGINT" />
+        <result column="operation" property="operation" javaType="int" jdbcType="INTEGER" />
+        <result column="script_id" property="scriptId" javaType="int" jdbcType="INTEGER" />
+        <result column="status" property="status" javaType="int" jdbcType="INTEGER" />
+        <result column="download_url" property="downloadUrl" javaType="String" jdbcType="VARCHAR" />
+        
+        <result column="create_time" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result column="valid_time" property="validTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result column="invalid_time" property="invalidTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result column="execute_time" property="executeTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+        <result column="result_time" property="resultTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
+       
+        <result column="ip" property="ip" javaType="String" jdbcType="VARCHAR" />
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        id, device_id, operation, script_id, status,download_url,ip, create_time, valid_time, invalid_time, execute_time,result_time
+    </sql>
+
+    <select id="getAll" resultMap="BaseResultMap"  >
+       SELECT 
+       <include refid="Base_Column_List" />
+	   FROM task
+    </select>
+    
+    <select id="getLimitOne" resultMap="BaseResultMap"  >
+       SELECT 
+       <include refid="Base_Column_List" />
+	   FROM task 
+	   where status=0 and now() BETWEEN valid_time and invalid_time LIMIT 1
+    </select>
+
+    <select id="getOne" parameterType="java.lang.String" resultMap="BaseResultMap" >
+        SELECT 
+       <include refid="Base_Column_List" />
+	   FROM task
+	   WHERE id = #{id}
+    </select>
+
+    <insert id="insert" parameterType="com.jbr.entity.TaskEntity" >
+       INSERT INTO 
+       		task
+       		(id, device_id, operation, script_id, download_url,status,create_time, valid_time, invalid_time) 
+       	VALUES
+       		(#{id}, #{deviceId},#{operation}, #{scriptId}, #{downloadUrl},0, now(), #{validTime}, #{invalidTime})
+    </insert>
+    
+     <insert id="insertBatch" parameterType="java.util.List">
+       INSERT INTO 
+       		task
+       		(id, device_id, operation, script_id, status,create_time, valid_time, invalid_time) 
+       	VALUES
+       	<foreach collection="list" item="item" index="index" separator="," >
+	        (#{id}, #{deviceId},#{operation}, #{scriptId}, 0, now(), #{validTime}, #{invalidTime})
+    	</foreach>
+    </insert>
+    
+    
+    
+    <update id="updateStatus" parameterType="java.lang.String" >
+       UPDATE 
+       		task 
+       SET 
+       	status = 1,execute_time = now()
+       WHERE
+       		id = #{id} and status = 0
+    </update>
+    
+    <update id="updateResult" parameterType="com.jbr.entity.TaskEntity" >
+	    update task  
+	    <set >  
+	      <if test="status != null" >  
+	        status = #{status,jdbcType=INTEGER},  
+	      </if>  
+	      <if test="resultTime != null" >  
+	        result_time = #{resultTime,jdbcType=TIMESTAMP},  
+	      </if>  
+	      <if test="ip != null" >  
+	        ip = #{ip,jdbcType=VARCHAR} 
+	      </if>  
+	    </set>  
+	    where id = #{id,jdbcType=VARCHAR}
+ 	</update>
+    
+    <delete id="delete" parameterType="java.lang.Long" >
+       DELETE FROM
+       		 task 
+       WHERE 
+       		 id =#{id}
+    </delete>
+
+</mapper>
