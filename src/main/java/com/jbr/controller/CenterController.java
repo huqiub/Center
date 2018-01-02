@@ -10,6 +10,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.util.http.fileupload.IOUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
@@ -26,6 +28,8 @@ import com.jbr.util.Utils;
 @Controller
 public class CenterController {
 
+	private static Logger log = LoggerFactory.getLogger(CenterController.class);
+
 	@Autowired
 	private CenterService centerService;
 
@@ -35,10 +39,10 @@ public class CenterController {
 	@Value("${script.name}")
 	private String scriptName;
 
-	@RequestMapping("/")
-	public String test() {
-		return "index";
-	}
+	// @RequestMapping("/")
+	// public String test() {
+	// return "index";
+	// }
 
 	@RequestMapping("/getDeviceIndex")
 	public String getDeviceIndex() {
@@ -52,15 +56,26 @@ public class CenterController {
 
 	@RequestMapping(value = "/getDevice", method = RequestMethod.POST)
 	public void getDevice(@RequestParam int count, @RequestParam int band) {
-		centerService.getDeviceAndSave(count, band);
+		try {
+			centerService.getDeviceAndSave(count, band);
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
 	}
 
 	@ResponseBody
 	@RequestMapping(value = "/task/get", method = RequestMethod.GET)
 	public String getTask() {
-		TaskEntity task = centerService.getTask();
-		if (task != null) {
-			return task.getId() + "|" + task.getDeviceId() + "|" + task.getOperation() + "|" + task.getDownloadUrl();
+		try {
+			TaskEntity task = centerService.getTask();
+			if (task != null) {
+				String result = task.getId() + "|" + task.getDeviceId() + "|" + task.getOperation() + "|"
+						+ task.getDownloadUrl();
+				log.info("获取到任务:" + result);
+				return result;
+			}
+		} catch (Exception e) {
+			log.error(e.getMessage());
 		}
 		return "";
 	}
@@ -69,8 +84,14 @@ public class CenterController {
 	@RequestMapping(value = "/task/result", method = RequestMethod.GET)
 	public int executeResult(HttpServletRequest request, @RequestParam("id") String taskId,
 			@RequestParam("code") int result) {
-		int msg = centerService.updateExecuteResult(taskId, result, Utils.getIpAddr(request));
-		return msg;
+		try {
+			log.info("收到任务返回结果:taskId=" + taskId + "，结果为：" + result);
+			int msg = centerService.updateExecuteResult(taskId, result, Utils.getIpAddr(request));
+			return msg;
+		} catch (Exception e) {
+			log.error(e.getMessage());
+		}
+		return 0;
 	}
 
 	@RequestMapping(value = "/task/download/{id}", method = RequestMethod.GET)
@@ -96,7 +117,7 @@ public class CenterController {
 			IOUtils.copy(myStream, response.getOutputStream());
 			response.flushBuffer();
 		} catch (IOException e) {
-			e.printStackTrace();
+			log.error("脚本下载失败：" + e.getMessage());
 		}
 	}
 }

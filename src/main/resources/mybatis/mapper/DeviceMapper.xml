@@ -7,10 +7,14 @@
         <result column="create_time" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
         <result column="first_login_time" property="firstLoginTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
         <result column="channal_id" property="channalId" javaType="String" jdbcType="VARCHAR" />
+        <result column="imei" property="imei" javaType="String" jdbcType="VARCHAR" />
+        <result column="imsi" property="imsi" javaType="String" jdbcType="VARCHAR" />
+        <result column="serialno" property="serialno" javaType="String" jdbcType="VARCHAR" />
+        <result column="pboneno" property="pboneno" javaType="String" jdbcType="VARCHAR" />
     </resultMap>
     
     <sql id="Base_Column_List" >
-        id, binding, create_time, first_login_time, channal_id
+        id, binding, create_time, first_login_time, channal_id,imei,imsi,serialno,pboneno
     </sql>
 
     <select id="getAll" resultMap="BaseResultMap"  >
@@ -29,18 +33,18 @@
     <insert id="insert" parameterType="com.jbr.entity.DeviceEntity" >
        INSERT INTO 
        		device
-       		(id, binding, create_time, channal_id) 
+       		(id, binding, create_time, channal_id,imei,imsi,serialno,pboneno) 
        	VALUES
-       		(#{id}, #{binding}, now(),#{channalId})
+       		(#{id}, #{binding}, now(),#{channalId},#{imei},#{imsi},#{serialNo},#{pboneNo})
     </insert>
     
      <insert id="insertBatch" parameterType="java.util.List">
        INSERT INTO 
        		device
-       		(id, binding, create_time, channal_id) 
+       		(id, binding, create_time, channal_id,imei,imsi,serialno,pboneno) 
        	VALUES
        	<foreach collection="list" item="item" index="index" separator="," >
-	        (#{item.id},#{item.binding},now(),#{item.channalId})
+	        (#{item.id},#{item.binding},now(),#{item.channalId},#{imei},#{imsi},#{serialNo},#{pboneNo})
     	</foreach>
     </insert>
     
