@@ -3,60 +3,121 @@
 <mapper namespace="com.jbr.mapper.DeviceMapper" >
     <resultMap id="BaseResultMap" type="com.jbr.entity.DeviceEntity" >
         <id column="id" property="id" javaType="long" jdbcType="BIGINT" />
-        <result column="binding" property="binding" javaType="int" jdbcType="INTEGER" />
+        <result column="bind" property="bind" javaType="int" jdbcType="INTEGER" />
         <result column="create_time" property="createTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
         <result column="first_login_time" property="firstLoginTime" javaType="java.util.Date" jdbcType="TIMESTAMP" />
         <result column="channal_id" property="channalId" javaType="String" jdbcType="VARCHAR" />
         <result column="imei" property="imei" javaType="String" jdbcType="VARCHAR" />
         <result column="imsi" property="imsi" javaType="String" jdbcType="VARCHAR" />
-        <result column="serialno" property="serialno" javaType="String" jdbcType="VARCHAR" />
-        <result column="pboneno" property="pboneno" javaType="String" jdbcType="VARCHAR" />
+        <result column="serialno" property="serialNo" javaType="String" jdbcType="VARCHAR" />
+        <result column="phoneno" property="phoneNo" javaType="String" jdbcType="VARCHAR" />
+        <result column="valid" property="valid" javaType="int" jdbcType="INTEGER" />
+        <result column="count" property="count" javaType="int" jdbcType="INTEGER" />
     </resultMap>
     
     <sql id="Base_Column_List" >
-        id, binding, create_time, first_login_time, channal_id,imei,imsi,serialno,pboneno
+        id, bind, create_time, first_login_time, channal_id,imei,imsi,serialno,phoneno,valid,count
     </sql>
+    
+     <sql id="Sql_Count">
+        SELECT COUNT(*) 
+    </sql>
+    <sql id="Sql_Where">
+        FROM device
+        <where>
+        	<if test="bind != null">
+                <![CDATA[AND bind = #{bind}]]>
+            </if>
+            <if test="valid != null">
+                <![CDATA[AND valid = #{valid}]]>
+            </if>
+             <if test="createTime != null">
+                <![CDATA[AND create_time >= #{createTime}]]>
+            </if>
+        </where>
+        order by create_time,id
+    </sql>
+     <select id="getByLimit" resultMap="BaseResultMap" parameterType="com.jbr.domain.DeviceCondition">
+       SELECT 
+       <include refid="Base_Column_List" />
+	   <include refid="Sql_Where" />
+        limit #{startRow},#{rows}
+    </select>
+    
+     <select id="getCount" resultType="Integer" parameterType="com.jbr.domain.DeviceCondition">
+	   <include refid="Sql_Count" />
+	   <include refid="Sql_Where" />
+    </select>
 
     <select id="getAll" resultMap="BaseResultMap"  >
        SELECT 
        <include refid="Base_Column_List" />
 	   FROM device
     </select>
+    
+    <select id="getByBind" resultMap="BaseResultMap"  >
+       SELECT 
+       <include refid="Base_Column_List" />
+	   FROM device 
+	   WHERE bind = #{bind} and valid = 1 and count = 0 
+	   ORDER BY id limit #{limit};
+    </select>
+    
+    <select id="getIdByBind" resultType="Long" >
+       SELECT id 
+	   FROM device 
+	   WHERE bind = #{bind} and valid = 1 and count = 0 
+	   ORDER BY id limit #{limit};
+    </select>
 
     <select id="getOne" parameterType="java.lang.Long" resultMap="BaseResultMap" >
         SELECT 
        <include refid="Base_Column_List" />
 	   FROM device
-	   WHERE id = #{id}
+	   WHERE id = #{id} and valid = 1;
     </select>
 
     <insert id="insert" parameterType="com.jbr.entity.DeviceEntity" >
        INSERT INTO 
        		device
-       		(id, binding, create_time, channal_id,imei,imsi,serialno,pboneno) 
+       		(id, bind, create_time, channal_id,imei,imsi,serialno,phoneno,valid,count) 
        	VALUES
-       		(#{id}, #{binding}, now(),#{channalId},#{imei},#{imsi},#{serialNo},#{pboneNo})
+       		(#{id}, #{bind}, now(),#{channalId},#{imei},#{imsi},#{serialNo},#{phoneNo},#{valid},#{count})
     </insert>
     
      <insert id="insertBatch" parameterType="java.util.List">
        INSERT INTO 
        		device
-       		(id, binding, create_time, channal_id,imei,imsi,serialno,pboneno) 
+       		(id, bind, create_time, channal_id,imei,imsi,serialno,phoneno,valid,count) 
        	VALUES
        	<foreach collection="list" item="item" index="index" separator="," >
-	        (#{item.id},#{item.binding},now(),#{item.channalId},#{imei},#{imsi},#{serialNo},#{pboneNo})
+	        (#{item.id},#{item.bind},now(),#{item.channalId},#{item.imei},#{item.imsi},#{item.serialNo},#{item.phoneNo},#{item.valid},#{item.count})
     	</foreach>
     </insert>
     
+     <update id="updateCount" parameterType="java.util.List">
+	     <foreach collection="list" item="item" index="index" open="" close="" separator=";">  
+		     UPDATE device 
+		     <set>
+		    	count = #{item.count}
+		     </set>
+		     WHERE id = #{item.id}
+	     </foreach>
+    </update>
     
-    
-    <update id="update" parameterType="java.lang.Long" >
+    <update id="updateFirstLoginTime" parameterType="java.lang.Long" >
        UPDATE 
        		device 
        SET 
        	first_Login_Time = now()
        WHERE 
-       		id = #{id}
+       		id = #{id} and first_Login_Time is null;
+    </update>
+    <update id="initCount">
+       UPDATE 
+       		device 
+       SET 
+       	first_Login_Time = null,count=0
     </update>
     
     <delete id="delete" parameterType="java.lang.Long" >

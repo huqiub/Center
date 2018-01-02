@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">   
+<head>  
+    <meta charset="UTF-8"/>  
+    <title>home page</title>  
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/default/easyui.css" th:href="@{easyui/themes/default/easyui.css}"/>  
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css" th:href="@{easyui/themes/icon.css}"/>  
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/color.css" th:href="@{easyui/themes/color.css}"/>  
+    <script type="text/javascript" src="../static/jquery/jquery.min.js" th:src="@{jquery/jquery.min.js}"></script>  
+    <script type="text/javascript" src="../static/easyui/jquery.easyui.min.js" th:src="@{easyui/jquery.easyui.min.js}"></script>  
+</head>  
+<body>
+	<div style="margin:10px 0 10px 0;"></div>
+	<form name="searchform" method="post" action="" id ="searchform">
+			<td><span style="font-size: 14px">创建时间:</span></td>
+			<td><input class="easyui-datetimebox" name="createTime" style="height:23px;width:140px"/> </td>
+		    <td><span style="font-size: 14px">账号绑定:</span></td>
+		    <td>
+		        <select class="easyui-combobox" name="bind">
+		        	<option value="">--请选择--</option>
+		            <option value="0" >否</option>
+		            <option value="1" >是</option>
+		        </select>
+		    </td>
+		    <td><span style="font-size: 14px">是否合法:</span></td>
+		    <td>
+		        <select class="easyui-combobox" name="valid">
+		        	<option value="">--请选择--</option>
+		            <option value="0" >否</option>
+		            <option value="1" >是</option>
+		        </select>
+		    </td>
+		    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="doSearch()">查询</a>
+		    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="initCount()">初始化使用次数</a>
+	 <div style="margin:10px 0 10px 0;"></div>
+	<table id="tt" style="width:1160px;height:615px" title="设备列表" iconCls="icon-save" rownumbers="true" pagination="true"></table>  
+	 </form>
+	
+	
+<script type="text/javascript">
+	
+	function doSearch(){
+		$('#tt').datagrid('load',{
+			bind:$("input[name='bind']").val(),
+			valid:$("input[name='valid']").val(),
+			createTime:$("input[name='createTime']").val()
+		});
+	}
+	
+	$('#tt').datagrid({  
+        title: "设备列表",  
+        url: '/searchDevice', 
+        pageSize:20,
+        nowrap: false,//是否换行，True 就会把数据显示在一行里
+        striped: true,//奇偶行使用不同背景色
+        columns: [  
+            [  
+                {field: 'id', title: '设备编码', width: 70, align: "center"},
+                {field: 'count', title: '次数', width: 40, align: 'center'}, 
+                {field: 'bind', title: '账号绑定', width: 50, align: "center",formatter:formatBind},
+                {field: 'channalId', title: '渠道号', width: 70, align: "center"},
+                {field: 'imei', title: 'IMEI', width: 130, align: 'center'}, 
+                {field: 'imsi', title: 'IMSI', width: 130, align: 'center'},
+                {field: 'serialNo', title: '序列号', width: 130, align: 'center'}, 
+                {field: 'phoneNo', title: '手机号码', width: 100, align: 'center'}, 
+                {field: 'firstLoginTime', title: '第一次操作时间', width: 130, align: 'center',formatter: formatDate},
+                {field: 'createTime', title: '创建时间', width: 130, align: 'center',formatter: formatDate},
+                {field: 'valid', title: '合法设备', width: 60, align: 'center',formatter:formatValid }
+                
+            ]  
+        ], toolbar: [  
+            {  
+                text: '添加',  
+                iconCls: 'icon-add',  
+                handler: function () {  
+                    openDialog("add_dialog", "add");  
+                }  
+            },  
+            '-',  
+            {  
+                text: '修改',  
+                iconCls: 'icon-edit',  
+                handler: function () {  
+                    openDialog("add_dialog", "edit");  
+                }  
+            },  
+            '-',  
+            {  
+                text: '删除',  
+                iconCls: 'icon-remove',  
+                handler: function () {  
+                    delAppInfo();  
+                }  
+            }  
+        ]  
+    });  
+  
+    //设置分页控件  
+    var p = $('#tt').datagrid('getPager');  
+    p.pagination({  
+        pageSize: 20,//每页显示的记录条数，默认为10  
+        pageList: [20,40,60,80,100,200,400],//可以设置每页记录条数的列表  
+        beforePageText: '第',//页数文本框前显示的汉字  
+        afterPageText: '页    共 {pages} 页',  
+        displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'  
+    });  
+	
+	Date.prototype.pattern=function(fmt) {
+	    var o = {         
+	    "M+" : this.getMonth()+1, //月份         
+	    "d+" : this.getDate(), //日         
+	    "h+" : this.getHours()%12 == 0 ? 12 : this.getHours()%12, //小时         
+	    "H+" : this.getHours(), //小时         
+	    "m+" : this.getMinutes(), //分         
+	    "s+" : this.getSeconds(), //秒         
+	    "q+" : Math.floor((this.getMonth()+3)/3), //季度         
+	    "S" : this.getMilliseconds() //毫秒         
+	    };         
+	    var week = {         
+	    "0" : "/u65e5",         
+	    "1" : "/u4e00",         
+	    "2" : "/u4e8c",         
+	    "3" : "/u4e09",         
+	    "4" : "/u56db",         
+	    "5" : "/u4e94",         
+	    "6" : "/u516d"        
+	    };         
+	    if(/(y+)/.test(fmt)){         
+	        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));         
+	    }         
+	    if(/(E+)/.test(fmt)){         
+	        fmt=fmt.replace(RegExp.$1, ((RegExp.$1.length>1) ? (RegExp.$1.length>2 ? "/u661f/u671f" : "/u5468") : "")+week[this.getDay()+""]);         
+	    }         
+	    for(var k in o){         
+	        if(new RegExp("("+ k +")").test(fmt)){         
+	            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));         
+	        }         
+	    }         
+	    return fmt;         
+	}       
+	     
+	function formatDate(value){
+		if(value!=undefined){
+			var date = new Date(value);
+			return date.pattern("yyyy-MM-dd HH:mm:ss");
+		}
+	}
+	
+	function formatValid(value){
+		 if(value==0){
+			 return "否";
+		 }else if(value==1){
+			 return "是";
+		 }
+	}
+	
+	function formatBind(value){
+		 if(value==0){
+			 return "否";
+		 }else if(value==1){
+			 return "是";
+		 }
+	}
+	
+	function initCount(){
+		$.messager.confirm('确认','确定要初始化设备使用次数吗？', function(r){
+		      if(r){
+		    	  $.get("/initCount", function(data){
+			          alert(data);
+				 });
+		      }
+		});
+	}
+	
+	</script>
+	
+</body> 
+</html> 

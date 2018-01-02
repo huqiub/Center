@@ -6,6 +6,7 @@ import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -63,5 +64,20 @@ public class Utils {
 			}
 		}
 		return ip;
+	}
+
+	public static boolean isEmptyList(List<?> list) {
+		if (list == null || list.size() == 0) {
+			return true;
+		}
+		return false;
+	}
+
+	public static int randomInt(int start, int end) {
+		return (int) (Math.random() * (end - start + 1) + start);
+	}
+
+	public static void main(String[] args) {
+		System.out.println(randomInt(1, 1));
 	}
 }

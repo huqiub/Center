@@ -1,7 +1,7 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">   
+<html xmlns:th="http://www.thymeleaf.org">
 <head>  
-    <meta charset="UTF-8"/>  
+    <meta charset="UTF-8"/>
     <title>home page</title>  
     <link rel="stylesheet" type="text/css" href="../static/easyui/themes/default/easyui.css" th:href="@{easyui/themes/default/easyui.css}"/>  
     <link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css" th:href="@{easyui/themes/icon.css}"/>  
@@ -21,8 +21,15 @@
 </style>
 </head>  
 <body class="easyui-layout">
-  <div region="north" class="north" title="TEST">
-    <h1>JBR</h1>
+  <div region="north" class="north" title="JBR" style="position:relative">
+        	
+        	<div style="width:300px;height:50px;position:relative"><h1 th:inline="text">Hello [[${#httpServletRequest.remoteUser}]]!</h1></div>
+        	<div style="width:300px;height:50px;position:absolute;right:0;bottom:0">
+				<form th:action="@{/logout}" method="post">
+		            <input type="submit" value="注 销"/>
+		            <input type="hidden" id="user" th:value="${#httpServletRequest.remoteUser}" /> 
+		        </form>
+	        </div>
   </div>
     <div id="tabs" region="center"  class="easyui-tabs" fit="true" border="false">
       <div title="首页"></div>
@@ -38,34 +45,77 @@
     <div name="All">关闭所有</div>
   </div>
 
-<script type="text/javascript">
+<script type="text/javascript" charset="utf-8">
 
 $(function () {  
+	
 	 //动态菜单数据
-    var treeData = [{
-            text : "菜单",
-            children : [{
-                    text : "获取设备",
-                    attributes : {
-                        url : "/getDeviceIndex"
-                    }
-                }, {
-                    text : "规划计算",
-                    attributes : {
-                        url : "/planIndex"
-                    }
-                }
-            ]
-        }
-    ];
+//     var treeData = [{
+//             text : "菜单",
+//             children : [{
+//                     text : "获取设备",
+//                     attributes : {
+//                         url : "/getDeviceIndex"
+//                     }
+//                 }, {
+//                     text : "规划计算",
+//                     attributes : {
+//                         url : "/planIndex"
+//                     }
+//                 }, {
+//                     text : "规划计算2",
+//                     attributes : {
+//                         url : "/plan2Index"
+//                     }
+//                 }, {
+//                     text : "任务管理",
+//                     attributes : {
+//                         url : "/taskIndex"
+//                     }
+//                 }, {
+//                     text : "脚本管理",
+//                     attributes : {
+//                         url : "/scriptIndex"
+//                     }
+//                 }
+//             ]
+//         }
+//     ];
 	 
+//     $.get("/getTree", function(data){
+//     	alert(11);
+//    		var treeData = "["+JSON.stringify(data)"]";
+//    		alert(treeData);
+// 	    $('#tt').tree({
+// 	   	 	data : treeData,
+// 	        onClick: function (node) {  
+// 	           addtab(node.text, node.attributes.url);  
+// 	       }  
+// 	   }); 
+// 	}); 
+	 
+	 var user = $("#user").val();
     //处理树型菜单点击事件  
-    $('#tt').tree({  
-    	 data : treeData,
+    $('#tt').tree({
+    	 url:"/getTree/"+user,
+    	 loadFilter: function(data){
+             if (data.d){      
+                 return data.d;      
+             } else {      
+                 return data;      
+             }     
+         },    
          onClick: function (node) {  
             addtab(node.text, node.attributes.url);  
         }  
     });  
+    //处理树型菜单点击事件  
+//     $('#tt').tree({
+//     	 data : treeData,
+//          onClick: function (node) {  
+//             addtab(node.text, node.attributes.url);  
+//         }  
+//     });  
 
     var addtab = function (title, url) {  
 
@@ -76,7 +126,6 @@ $(function () {
                 title: title,  
                 closable: true,  
                 content: createFrame(url), 
-                //href: url,  
             });  
         }  
     }  

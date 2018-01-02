@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">   
+<head>  
+    <meta charset="UTF-8"/>  
+    <title>home page</title>  
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/default/easyui.css" th:href="@{easyui/themes/default/easyui.css}"/>  
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css" th:href="@{easyui/themes/icon.css}"/>  
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/color.css" th:href="@{easyui/themes/color.css}"/>  
+    <script type="text/javascript" src="../static/jquery/jquery.min.js" th:src="@{jquery/jquery.min.js}"></script>  
+    <script type="text/javascript" src="../static/easyui/jquery.easyui.min.js" th:src="@{easyui/jquery.easyui.min.js}"></script>  
+</head>  
+<body >
+			<div class="easyui-panel" title="计算" style="width:900px;padding:10px;">
+				<div style="margin:10px 0;">
+					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="loadLocal()">初始化</a>
+<!-- 					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="loadRemote()">LoadRemote</a> -->
+					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重置</a>
+					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="saveTemp()">保存数据</a>
+				</div>
+	         <form id="rule" method="post" enctype="multipart/form-data">
+	            <table >
+	            	<tr>
+	                    <td>稽核年月:</td>
+	                    <td><input id="month" name="month" style="width:80px"></input></td>
+	                </tr>
+	                <tr>
+	                    <td>渠道号:</td>
+	                    <td><input id="channel" name="channel" value ="0140000" style="width:80px"></input></td>
+	                </tr>
+	             </table>
+	                <hr />
+	             <table>
+	             	<tr>
+	             		<td align="center"><strong>条件</strong></td>
+	                    <td align="center"><strong>总数</strong></td>
+	                    <td align="center"><strong>稽核比例</strong></td>
+	                    <td align="center"><strong>分布比例</strong></td>
+	                    <td align="center"><strong>计算结果</strong></td>
+	                </tr>
+	                <tr>
+	                    <td>111:</td>
+	                    <td><input id="t111" name="t111" style="width:80px"/></td>
+	                    <td><input id="r111" name="r111" style="width:80px"/></td>
+	                    <td><input id="s111" name="s111" style="width:80px"/></td>
+	                    <td><input id="n111" name="n111" style="width:80px"/></td>
+	                </tr>
+	                <tr>
+	                    <td>110:</td>
+	                    <td><input id="t110" name="t110" style="width:80px"/></td>
+	                    <td><input id="r110" name="r110" style="width:80px"/></td>
+	                    <td><input id="s110" name="s110" style="width:80px"/></td>
+	                    <td><input id="n110" name="n110" style="width:80px"/></td>
+	                </tr>
+	                <tr>
+	                    <td>101:</td>
+	                    <td><input id="t101" name="t101" style="width:80px"/></td>
+	                    <td><input id="r101" name="r101" style="width:80px"/></td>
+	                    <td><input id="s101" name="s101" style="width:80px"/></td>
+	                    <td><input id="n101" name="n101" style="width:80px"/></td>
+	                </tr>
+	                <tr>
+	                    <td>100:</td>
+	                    <td><input id="t100" name="t100" style="width:80px"/></td>
+	                    <td><input id="r100" name="r100" style="width:80px"/></td>
+	                    <td><input id="s100" name="s100" style="width:80px"/></td>
+	                    <td><input id="n100" name="n100" style="width:80px"/></td>
+	                </tr>
+	                <tr>
+	                    <td>011:</td>
+	                    <td><input id="t011" name="t011" style="width:80px"/></td>
+	                    <td><input id="r011" name="r011" style="width:80px"/></td>
+	                    <td><input id="s011" name="s011" style="width:80px"/></td>
+	                    <td><input id="n011" name="n011" style="width:80px"/></td>
+	                </tr>
+	                <tr>
+	                    <td>010:</td>
+	                    <td><input id="t010" name="t010" style="width:80px"/></td>
+	                    <td><input id="r010" name="r010" style="width:80px"/></td>
+	                    <td><input id="s010" name="s010" style="width:80px"/></td>
+	                    <td><input id="n010" name="n010" style="width:80px"/></td>
+	                </tr>
+	                <tr>
+	                    <td>001:</td>
+	                    <td><input id="t001" name="t001" style="width:80px"/></td>
+	                    <td><input id="r001" name="r001" style="width:80px"/></td>
+	                    <td><input id="s001" name="s001" style="width:80px"/></td>
+	                    <td><input id="n001" name="n001" style="width:80px"/></td>
+	                </tr>
+	                 <tr>
+	                    <td>000:</td>
+	                    <td><input id="t000" name="t000" style="width:80px"/></td>
+	                    <td><input id="r000" name="r000" style="width:80px"/></td>
+	                    <td><input id="s000" name="s000" style="width:80px"/></td>
+	                    <td><input id="n000" name="n000" style="width:80px"/></td>
+	                </tr>
+	                <tr>
+	                    <td></td>
+	                    <td></td>
+	                    <td colspan="2">
+	                		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="compute()" style="width:80px" title="计算">计算</a>
+	                		<a href="javascript:void(0)" class="easyui-linkbutton" onclick="test5()" style="width:80px" title="覆盖">覆盖</a>
+                		</td>
+                	</tr>
+	            </table><hr />
+	            <table>
+	                <tr>
+	                    <td>总数:</td>
+	                    <td><input id="allSum" name="allSum" style="width:80px"></input></td>
+	                </tr>
+	                <tr>
+	                    <td>剩余有效数:</td>
+	                    <td><input id="validSum" name="validSum" style="width:80px"></input></td>
+	                </tr>
+	            </table>
+	            <hr />
+	            <table>
+	                <tr>
+	                    <td>目标有效数:</td>
+	                    <td><input id="targetValidSum" name="targetValidSum" style="width:80px"></input></td>
+	                    <td>
+                			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="infer()" style="width:80px" title="预估总数">预估总数</a>
+                		</td>
+                	</tr>
+                	<tr>
+	                    <td>将要执行总数:</td>
+	                    <td><input id="sum" name="sum" style="width:80px"></input></td>
+	                    <td>
+                			<a href="javascript:void(0)" class="easyui-linkbutton" onclick="distribute()" style="width:100px" title="开始分配任务">开始分配任务</a>
+                		</td>
+                	</tr>
+	            </table>
+	        </form>
+    	</div>
+    	
+    <div id="mask" class="datagrid-mask mymask"></div>
+	<div id="maskMsg" class="datagrid-mask-msg mymask">处理中...</div>
+</body> 
+ <script type="text/javascript">
+    var date=new Date;
+	var year=date.getFullYear(); 
+	var month=date.getMonth()+1;
+	$("#month").val(year+"-"+month);
+
+  	
+  	function toPoint(percent){
+  	    var str=percent.replace("%","");
+  	    str= str/100;
+  	    return str;
+  	}
+  	
+	function loadLocal(){
+		var month = $("#month").val();
+		var channel = $("#channel").val();
+		var path = "/loadTemp/"+month+"/"+channel;
+		$('#rule').form('load',path);
+	}
+	
+	function clearForm(){
+		$('#rule').form('clear');
+	}
+	
+	function saveTemp(){
+		$('#rule').form('submit', {
+			url:"/saveTemp",
+			success:function(data){
+				if("\"success\""==data){
+					alert("操作成功");
+				}else{
+					alert(data);
+				}
+		    }
+		});
+	}
+	
+	function compute(){
+		$('#rule').form('submit', {
+			url:"/compute",
+			success:function(data){
+				var obj = eval('(' + data + ')');
+				$('#r000').val(obj.r000);
+				$('#r001').val(obj.r001);
+				$('#r010').val(obj.r010);
+				$('#r011').val(obj.r011);
+				$('#r100').val(obj.r100);
+				$('#r101').val(obj.r101);
+				$('#r110').val(obj.r110);
+				$('#r111').val(obj.r111);
+				$('#s000').val(obj.s000);
+				$('#s001').val(obj.s001);
+				$('#s010').val(obj.s010);
+				$('#s011').val(obj.s011);
+				$('#s100').val(obj.s100);
+				$('#s101').val(obj.s101);
+				$('#s110').val(obj.s110);
+				$('#s111').val(obj.s111);
+				$('#allSum').val(obj.allSum);
+				$('#validSum').val(obj.validSum);
+		    }
+		});
+	}
+	
+	function distribute(){
+		test5();
+		MaskUtil.mask();
+		$('#rule').form('submit', {
+			url:"/distributeTask",
+			success:function(data){
+				if("\"success\""==data){
+					MaskUtil.unmask();
+					alert("操作成功");
+				}else{
+					MaskUtil.unmask();
+					alert(data);
+				}
+		    }
+		});
+	}
+  	
+  	function test5(){
+  		$("#t000").val($("#n000").val());
+  		$("#t001").val($("#n001").val());
+  		$("#t010").val($("#n010").val());
+  		$("#t011").val($("#n011").val());
+  		$("#t100").val($("#n100").val());
+  		$("#t101").val($("#n101").val());
+  		$("#t110").val($("#n110").val());
+  		$("#t111").val($("#n111").val());
+  	}
+  	
+  	function infer(){
+  		var y4 = 1-toPoint($("#r000").val()).toFixed(4);
+  		var y5 = 1-toPoint($("#r001").val()).toFixed(4);
+  		var y6 = 1-toPoint($("#r010").val()).toFixed(4);
+  		var y7 = 1-toPoint($("#r011").val()).toFixed(4);
+  		var y8 = 1-toPoint($("#r100").val()).toFixed(4);
+  		var y9 = 1-toPoint($("#r101").val()).toFixed(4);
+  		var y10 = 1-toPoint($("#r110").val()).toFixed(4);
+  		var y11 = 1-toPoint($("#r111").val()).toFixed(4);
+  		
+  		var p4 = toPoint($("#s000").val()).toFixed(4);
+  		var p5 = toPoint($("#s001").val()).toFixed(4);
+  		var p6 = toPoint($("#s010").val()).toFixed(4);
+  		var p7 = toPoint($("#s011").val()).toFixed(4);
+  		var p8 = toPoint($("#s100").val()).toFixed(4);
+  		var p9 = toPoint($("#s101").val()).toFixed(4);
+  		var p10 = toPoint($("#s110").val()).toFixed(4);
+  		var p11 = toPoint($("#s111").val()).toFixed(4);
+  		
+  		var targetValidSum = $("#targetValidSum").val();
+  		var allSum = (targetValidSum/(y4*p4+y5*p5+y6*p6+y7*p7+y8*p8+y9*p9+y10*p10+y11*p11)).toFixed(0);
+  		$("#sum").val(allSum);
+  		
+  		var s4 = (allSum*p4).toFixed(0);
+  		var s5 = (allSum*p5).toFixed(0);
+  		var s6 = (allSum*p6).toFixed(0);
+  		var s7 = (allSum*p7).toFixed(0);
+  		var s8 = (allSum*p8).toFixed(0);
+  		var s9 = (allSum*p9).toFixed(0);
+  		var s10 = (allSum*p10).toFixed(0);
+  		var s11 = (allSum*p11).toFixed(0);
+  		
+  		$("#n000").val(s4);
+		$("#n001").val(s5);
+		$("#n010").val(s6);
+		$("#n011").val(s7);
+		$("#n100").val(s8);
+		$("#n101").val(s9);
+		$("#n110").val(s10);
+		$("#n111").val(s11);
+  	}
+	
+	var MaskUtil = (function(){  
+	    function init(){  
+	        $("#mask").css({width:"100%",height:$(document).height()});  
+	        var scrollTop = $(document.body).scrollTop();  
+	        $("#maskMsg").css({  
+	            left:( $(document.body).outerWidth(true) - 190 ) / 2  
+	            ,top:( ($(window).height() - 45) / 2 ) + scrollTop  
+	        });   
+	                   
+	    }  
+	    return {  
+	        mask:function(msg){  
+	            init();
+	            $("#mask").show();  
+	            $("#maskMsg").show();  
+	        }  
+	        ,unmask:function(){  
+	        	$("#mask").hide();  
+	        	$("#maskMsg").hide();  
+	        }  
+	    }  
+	}());
+	
+
+  	
+	</script>
+</html> 

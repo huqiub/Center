@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">   
+<head>  
+    <meta charset="UTF-8"/>  
+    <title>home page</title>  
+    <script type="text/javascript" src="../static/jquery/jquery.min.js" th:src="@{jquery/jquery.min.js}"></script>  
+    <script type="text/javascript" src="../static/easyui/jquery.easyui.min.js" th:src="@{easyui/jquery.easyui.min.js}"></script>  
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/default/easyui.css" th:href="@{easyui/themes/default/easyui.css}"/>  
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/icon.css" th:href="@{easyui/themes/icon.css}"/>  
+    <link rel="stylesheet" type="text/css" href="../static/easyui/themes/color.css" th:href="@{easyui/themes/color.css}"/>  
+</head>  
+<body >
+	<div style="margin:10px 0 10px 0;"></div>
+	<form name="searchform" method="post" action="" id ="searchform">
+			<td><span style="font-size: 14px">开始时间:</span></td>
+			<td><input class="easyui-datetimebox" name="validTime" style="height:23px;width:140px"/> </td>
+			<td><span style="font-size: 14px">失效时间:</span></td>
+			<td><input class="easyui-datetimebox" name="invalidTime" style="height:23px;width:140px"/> </td>
+		    <td><span style="font-size: 14px">状态:</span></td>
+		    <td>
+		        <select class="easyui-combobox" name="status">
+		        	<option value="0">--请选择--</option>
+		            <option value="1" >等待执行</option>
+		            <option value="2" >执行中</option>
+		            <option value="3" >执行成功</option>
+		            <option value="4" >执行失败</option>
+		        </select>
+		    </td>
+		    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="doSearch()">查询</a>
+		    <a href="javascript:void(0)" class="easyui-linkbutton" iconCls="icon-search" onclick="truncate()">清空任务表</a>
+	 </form>
+	 <div style="margin:10px 0 10px 0;"></div>
+	<table id="tt" style="width:1274px;height:615px" title="任务列表" iconCls="icon-save" rownumbers="true" pagination="true"></table>  
+	
+</body> 
+	<script type="text/javascript">
+	
+	function doSearch(){
+		$('#tt').datagrid('load',{
+			status:$("input[name='status']").val(),
+			validTime:$("input[name='validTime']").val(),
+			invalidTime:$("input[name='invalidTime']").val()
+		});
+	}
+	
+	$('#tt').datagrid({  
+        title: "任务列表",  
+        url: '/getTask', 
+        pageSize:20,
+        queryParams: {
+        	status: $("#status").val()
+        },
+        nowrap: false,//是否换行，True 就会把数据显示在一行里
+        striped: true,//奇偶行使用不同背景色
+        columns: [  
+            [  
+                {field: 'id', title: '任务编码', width: 134, align: "center"},  
+                {field: 'deviceId', title: '设备编码', width: 70, align: "center"},  
+                {field: 'operation', title: '操作', width: 70, align: 'center',formatter: formatOper}, 
+                {field: 'scriptId', title: '脚本编码', width: 70, align: "center"},
+                {field: 'status', title: '状态', width: 70, align: 'center',formatter: formatStatus}, 
+                {field: 'ip', title: '返回IP', width: 90, align: 'center'}, 
+                {field: 'createTime', title: '创建时间', width: 130, align: 'center',formatter: formatDate}, 
+                {field: 'validTime', title: '开始时间', width: 130, align: 'center',formatter: formatDate}, 
+                {field: 'invalidTime', title: '失效时间', width: 130, align: 'center',formatter: formatDate}, 
+                {field: 'executeTime', title: '执行时间', width: 130, align: 'center',formatter: formatDate}, 
+                {field: 'resultTime', title: '返回时间', width: 130, align: 'center',formatter: formatDate}
+                
+            ]  
+        ], toolbar: [  
+            {  
+                text: '添加',  
+                iconCls: 'icon-add',  
+                handler: function () {  
+                    openDialog("add_dialog", "add");  
+                }  
+            },  
+            '-',  
+            {  
+                text: '修改',  
+                iconCls: 'icon-edit',  
+                handler: function () {  
+                    openDialog("add_dialog", "edit");  
+                }  
+            },  
+            '-',  
+            {  
+                text: '删除',  
+                iconCls: 'icon-remove',  
+                handler: function () {  
+                    delAppInfo();  
+                }  
+            }  
+        ]  
+    });  
+  
+    //设置分页控件  
+    var p = $('#tt').datagrid('getPager');  
+    p.pagination({  
+        pageSize: 20,//每页显示的记录条数，默认为10  
+        pageList: [20,40,60,80,100,200,400],//可以设置每页记录条数的列表  
+        beforePageText: '第',//页数文本框前显示的汉字  
+        afterPageText: '页    共 {pages} 页',  
+        displayMsg: '当前显示 {from} - {to} 条记录   共 {total} 条记录'  
+    });  
+	
+	Date.prototype.pattern=function(fmt) {
+	    var o = {         
+	    "M+" : this.getMonth()+1, //月份         
+	    "d+" : this.getDate(), //日         
+	    "h+" : this.getHours()%12 == 0 ? 12 : this.getHours()%12, //小时         
+	    "H+" : this.getHours(), //小时         
+	    "m+" : this.getMinutes(), //分         
+	    "s+" : this.getSeconds(), //秒         
+	    "q+" : Math.floor((this.getMonth()+3)/3), //季度         
+	    "S" : this.getMilliseconds() //毫秒         
+	    };         
+	    var week = {         
+	    "0" : "/u65e5",         
+	    "1" : "/u4e00",         
+	    "2" : "/u4e8c",         
+	    "3" : "/u4e09",         
+	    "4" : "/u56db",         
+	    "5" : "/u4e94",         
+	    "6" : "/u516d"        
+	    };         
+	    if(/(y+)/.test(fmt)){         
+	        fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));         
+	    }         
+	    if(/(E+)/.test(fmt)){         
+	        fmt=fmt.replace(RegExp.$1, ((RegExp.$1.length>1) ? (RegExp.$1.length>2 ? "/u661f/u671f" : "/u5468") : "")+week[this.getDay()+""]);         
+	    }         
+	    for(var k in o){         
+	        if(new RegExp("("+ k +")").test(fmt)){         
+	            fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));         
+	        }         
+	    }         
+	    return fmt;         
+	}       
+	     
+	function formatDate(value){
+		if(value!=undefined){
+			var date = new Date(value);
+			return date.pattern("yyyy-MM-dd HH:mm:ss");
+		}
+	}
+	
+	function formatStatus(value){
+		 if(value==1){
+			 return "等待执行";
+		 }else if(value==2){
+			 return "执行中";
+		 }else if(value==3){
+			 return "执行成功";
+		 }else if(value==4){
+			 return "执行失败";
+		 }
+	}
+	
+	function formatOper(value){
+		 if(value==1){
+			 return "注册";
+		 }else if(value==2){
+			 return "登录";
+		 }else if(value==3){
+			 return "其他";
+		 }
+	}
+	
+	function truncate(){
+		$.messager.confirm('确认','确定要清空任务表吗？', function(r){
+		      if(r){
+		   		$.get("/truncateTask", function(data){
+	 	          	alert(data);
+	 			});
+		      }
+		});
+	}
+	
+	</script>
+</html> 

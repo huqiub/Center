@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.jbr.mapper.RuleMapper" >
+    <resultMap id="BaseResultMap" type="com.jbr.entity.RuleEntity" >
+        <id column="month" property="month" javaType="String" jdbcType="VARCHAR" />
+        <result column="channel" property="channel" javaType="String" jdbcType="VARCHAR" />
+        <result column="noLogin" property="noLogin" javaType="float" jdbcType="FLOAT" />
+        <result column="activelyDays7" property="activelyDays7" javaType="float" jdbcType="FLOAT" />
+        <result column="abTime" property="abTime" javaType="float" jdbcType="FLOAT" />
+        
+        <result column="t000" property="t000" javaType="int" jdbcType="INTEGER" />
+        <result column="t001" property="t001" javaType="int" jdbcType="INTEGER" />
+        <result column="t010" property="t010" javaType="int" jdbcType="INTEGER" />
+        <result column="t011" property="t011" javaType="int" jdbcType="INTEGER" />
+        <result column="t100" property="t100" javaType="int" jdbcType="INTEGER" />
+        <result column="t101" property="t101" javaType="int" jdbcType="INTEGER" />
+        <result column="t110" property="t110" javaType="int" jdbcType="INTEGER" />
+        <result column="t111" property="t111" javaType="int" jdbcType="INTEGER" />
+        
+        <result column="r000" property="r000" javaType="String" jdbcType="VARCHAR" />
+        <result column="r001" property="r001" javaType="String" jdbcType="VARCHAR" />
+        <result column="r010" property="r010" javaType="String" jdbcType="VARCHAR" />
+        <result column="r011" property="r011" javaType="String" jdbcType="VARCHAR" />
+        <result column="r100" property="r100" javaType="String" jdbcType="VARCHAR" />
+        <result column="r101" property="r101" javaType="String" jdbcType="VARCHAR" />
+        <result column="r110" property="r110" javaType="String" jdbcType="VARCHAR" />
+        <result column="r111" property="r111" javaType="String" jdbcType="VARCHAR" />
+        
+        <result column="s000" property="s000" javaType="String" jdbcType="VARCHAR" />
+        <result column="s001" property="s001" javaType="String" jdbcType="VARCHAR" />
+        <result column="s010" property="s010" javaType="String" jdbcType="VARCHAR" />
+        <result column="s011" property="s011" javaType="String" jdbcType="VARCHAR" />
+        <result column="s100" property="s100" javaType="String" jdbcType="VARCHAR" />
+        <result column="s101" property="s101" javaType="String" jdbcType="VARCHAR" />
+        <result column="s110" property="s110" javaType="String" jdbcType="VARCHAR" />
+        <result column="s111" property="s111" javaType="String" jdbcType="VARCHAR" />
+        
+        
+    </resultMap>
+    
+    <sql id="Base_Column_List" >
+        month, channel,noLogin, activelyDays7, abTime, 
+        t000,t001,t010, t011, t100, t101, t110,t111,
+        r000,r001,r010, r011, r100, r101, r110,r111,
+        s000,s001,s010, s011, s100, s101, s110,s111
+    </sql>
+
+    <select id="getAll" resultMap="BaseResultMap"  >
+       SELECT 
+       <include refid="Base_Column_List" />
+	   FROM rule
+    </select>
+
+    <select id="getOne" resultMap="BaseResultMap" >
+        SELECT 
+       <include refid="Base_Column_List" />
+	   FROM rule
+	   WHERE month = #{month} and channel = #{channel}
+    </select>
+
+    <insert id="insert" parameterType="com.jbr.entity.RuleEntity" >
+       INSERT INTO 
+       		rule
+       		(month, channel, noLogin, activelyDays7, abTime,
+       		t000,t001,t010, t011, t100, t101, t110,t111,
+       		r000,r001,r010, r011, r100, r101, r110,r111,
+       		s000,s001,s010, s011, s100, s101, s110,s111) 
+       	VALUES
+       		(#{month}, #{channel},#{noLogin},#{activelyDays7}, #{abTime}, 
+       		#{t000},#{t001}, #{t010}, #{t011}, #{t100}, #{t101}, #{t110}, #{t111},
+       		#{r000},#{r001}, #{r010}, #{r011}, #{r100}, #{r101}, #{r110}, #{r111},
+       		#{s000},#{s001}, #{s010}, #{s011}, #{s100}, #{s101}, #{s110}, #{s111})
+    	ON DUPLICATE KEY UPDATE 
+    		channel = values(channel),noLogin = values(noLogin),activelyDays7 = values(activelyDays7),abTime = values(abTime),
+    		t000 = values(t000),t001 = values(t001),t010 = values(t010),t011 = values(t011),t100 = values(t100),t101 = values(t101),t110 = values(t110),t111 = values(t111),
+    		r000 = values(r000),r001 = values(r001),r010 = values(r010),r011 = values(r011),r100 = values(r100),r101 = values(r101),r110 = values(r110),r111 = values(r111),
+    		s000 = values(s000),s001 = values(s001),s010 = values(s010),s011 = values(s011),s100 = values(s100),s101 = values(s101),s110 = values(s110),s111 = values(s111)
+    </insert>
+
+</mapper>

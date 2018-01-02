@@ -18,22 +18,22 @@
 			    	<table cellpadding="2">
 			    		<tr>
 			    			<td>获取数量:</td>
-			    			<td><input class="easyui-textbox" type="text" name="count" data-options="required:true"></input></td>
+			    			<td><input class="easyui-textbox" type="text" name="count" value ="1000" data-options="required:true"></input></td>
 			    		</tr>
 			    		<tr>
 			    			<td>是否绑定账号：</td>
 	    								<td>
 			    			<span class="radioSpan">
-				                <input type="radio" name="band" value="1" >是</input>
-				                <input type="radio" name="band" value="0" checked="checked">否</input>
+				                <input type="radio" name="bind" value="1" >是</input>
+				                <input type="radio" name="bind" value="0" checked="checked">否</input>
 				            </span>
 				            </td>
 			    		</tr>
 			    	</table>
 			    </form>
 			    <div style="text-align:center;padding:5px">
-			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">Submit</a>
-			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
+			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">提交</a>
+			    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">重置</a>
 			    </div>
 		    </div>
 		</div>
@@ -43,11 +43,19 @@
 	function submitForm(){
 		$('#fff').form('submit', {
 			url:"/getDevice",
+			onSubmit: function(){
+				 
+			},
 			success:function(data){
-				alert("成功");
+				if("\"success\""==data){
+					alert("成功");
+				}else{
+					alert(data);
+				}
 		    }
 		});
 	}
+	
 	
 	</script>
 </body> 

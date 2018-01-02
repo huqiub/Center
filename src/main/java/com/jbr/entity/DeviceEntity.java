@@ -5,11 +5,11 @@ import java.util.Date;
 
 public class DeviceEntity implements Serializable {
 
-	private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 404834663194892801L;
 
 	private Long id;
 
-	private Integer binding;
+	private Integer bind;
 
 	private Date createTime;
 
@@ -19,8 +19,28 @@ public class DeviceEntity implements Serializable {
 
 	private String imei;
 	private String imsi;
-	private String serailNo;
+	private String serialNo;
 	private String phoneNo;
+
+	private Integer valid;
+
+	private Integer count;
+
+	public Integer getValid() {
+		return valid;
+	}
+
+	public void setValid(Integer valid) {
+		this.valid = valid;
+	}
+
+	public Integer getCount() {
+		return count;
+	}
+
+	public void setCount(Integer count) {
+		this.count = count;
+	}
 
 	public String getImei() {
 		return imei;
@@ -38,12 +58,12 @@ public class DeviceEntity implements Serializable {
 		this.imsi = imsi;
 	}
 
-	public String getSerailNo() {
-		return serailNo;
+	public String getSerialNo() {
+		return serialNo;
 	}
 
-	public void setSerailNo(String serailNo) {
-		this.serailNo = serailNo;
+	public void setSerialNo(String serialNo) {
+		this.serialNo = serialNo;
 	}
 
 	public String getPhoneNo() {
@@ -62,12 +82,12 @@ public class DeviceEntity implements Serializable {
 		this.id = id;
 	}
 
-	public Integer getBinding() {
-		return binding;
+	public Integer getBind() {
+		return bind;
 	}
 
-	public void setBinding(Integer binding) {
-		this.binding = binding;
+	public void setBind(Integer bind) {
+		this.bind = bind;
 	}
 
 	public Date getCreateTime() {

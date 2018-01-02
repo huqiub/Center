@@ -26,9 +26,9 @@ import com.jbr.service.CenterService;
 import com.jbr.util.Utils;
 
 @Controller
-public class CenterController {
+public class OuterController {
 
-	private static Logger log = LoggerFactory.getLogger(CenterController.class);
+	private static Logger log = LoggerFactory.getLogger(OuterController.class);
 
 	@Autowired
 	private CenterService centerService;
@@ -39,45 +39,22 @@ public class CenterController {
 	@Value("${script.name}")
 	private String scriptName;
 
-	// @RequestMapping("/")
-	// public String test() {
-	// return "index";
-	// }
-
-	@RequestMapping("/getDeviceIndex")
-	public String getDeviceIndex() {
-		return "getDevice";
-	}
-
-	@RequestMapping("/planIndex")
-	public String planIndex() {
-		return "plan";
-	}
-
-	@RequestMapping(value = "/getDevice", method = RequestMethod.POST)
-	public void getDevice(@RequestParam int count, @RequestParam int band) {
-		try {
-			centerService.getDeviceAndSave(count, band);
-		} catch (Exception e) {
-			log.error(e.getMessage());
-		}
-	}
-
-	@ResponseBody
 	@RequestMapping(value = "/task/get", method = RequestMethod.GET)
-	public String getTask() {
+	public void getTask(HttpServletRequest request, HttpServletResponse response) {
 		try {
+			response.setContentType("text/plain; charset=utf-8");
 			TaskEntity task = centerService.getTask();
 			if (task != null) {
+				centerService.updateDeviceFirstLoginTime(task.getDeviceId());
 				String result = task.getId() + "|" + task.getDeviceId() + "|" + task.getOperation() + "|"
 						+ task.getDownloadUrl();
+				response.getWriter().write(result);
 				log.info("获取到任务:" + result);
-				return result;
 			}
+			response.getWriter().write("");
 		} catch (Exception e) {
 			log.error(e.getMessage());
 		}
-		return "";
 	}
 
 	@ResponseBody

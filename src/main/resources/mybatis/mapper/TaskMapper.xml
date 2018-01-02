@@ -18,6 +18,25 @@
         <result column="ip" property="ip" javaType="String" jdbcType="VARCHAR" />
     </resultMap>
     
+    <sql id="Sql_Count">
+        SELECT COUNT(*) 
+    </sql>
+    <sql id="Sql_Where">
+        FROM task
+        <where>
+            <if test="status != 0">
+                AND status = #{status}
+            </if>
+             <if test="validTime != null">
+                <![CDATA[AND valid_time >= #{validTime}]]>     
+            </if>
+             <if test="invalidTime != null">
+                <![CDATA[AND invalid_time <= #{invalidTime}]]>     
+            </if>
+        </where>
+        order by device_id,valid_time 
+    </sql>
+    
     <sql id="Base_Column_List" >
         id, device_id, operation, script_id, status,download_url,ip, create_time, valid_time, invalid_time, execute_time,result_time
     </sql>
@@ -28,11 +47,23 @@
 	   FROM task
     </select>
     
+    <select id="getByLimit" resultMap="BaseResultMap" parameterType="com.jbr.domain.TaskCondition">
+       SELECT 
+       <include refid="Base_Column_List" />
+	   <include refid="Sql_Where" />
+        limit #{startRow},#{rows}
+    </select>
+    
+     <select id="getCount" resultType="Integer" parameterType="com.jbr.domain.TaskCondition">
+	   <include refid="Sql_Count" />
+	   <include refid="Sql_Where" />
+    </select>
+    
     <select id="getLimitOne" resultMap="BaseResultMap"  >
        SELECT 
        <include refid="Base_Column_List" />
 	   FROM task 
-	   where status=0 and now() BETWEEN valid_time and invalid_time LIMIT 1
+	   where status=1 and now() BETWEEN valid_time and invalid_time order by valid_time LIMIT 1
     </select>
 
     <select id="getOne" parameterType="java.lang.String" resultMap="BaseResultMap" >
@@ -47,35 +78,33 @@
        		task
        		(id, device_id, operation, script_id, download_url,status,create_time, valid_time, invalid_time) 
        	VALUES
-       		(#{id}, #{deviceId},#{operation}, #{scriptId}, #{downloadUrl},0, now(), #{validTime}, #{invalidTime})
+       		(#{id}, #{deviceId},#{operation}, #{scriptId}, #{downloadUrl},#{status}, now(), #{validTime}, #{invalidTime})
     </insert>
     
      <insert id="insertBatch" parameterType="java.util.List">
        INSERT INTO 
        		task
-       		(id, device_id, operation, script_id, status,create_time, valid_time, invalid_time) 
+       		(id, device_id, operation, script_id, download_url,status,create_time, valid_time, invalid_time) 
        	VALUES
        	<foreach collection="list" item="item" index="index" separator="," >
-	        (#{id}, #{deviceId},#{operation}, #{scriptId}, 0, now(), #{validTime}, #{invalidTime})
+	        (#{item.id}, #{item.deviceId},#{item.operation}, #{item.scriptId}, #{item.downloadUrl},#{item.status}, now(), #{item.validTime}, #{item.invalidTime})
     	</foreach>
     </insert>
-    
-    
     
     <update id="updateStatus" parameterType="java.lang.String" >
        UPDATE 
        		task 
        SET 
-       	status = 1,execute_time = now()
+       	status = 2,execute_time = now()
        WHERE
-       		id = #{id} and status = 0
+       		id = #{id} and status = 1
     </update>
     
     <update id="updateResult" parameterType="com.jbr.entity.TaskEntity" >
 	    update task  
 	    <set >  
-	      <if test="status != null" >  
-	        status = #{status,jdbcType=INTEGER},  
+	      <if test="status != 0" >  
+	        status = #{status,jdbcType=INTEGER},
 	      </if>  
 	      <if test="resultTime != null" >  
 	        result_time = #{resultTime,jdbcType=TIMESTAMP},  
@@ -93,5 +122,9 @@
        WHERE 
        		 id =#{id}
     </delete>
+    
+    <update id="truncateTable">
+        truncate table task
+    </update>
 
 </mapper>

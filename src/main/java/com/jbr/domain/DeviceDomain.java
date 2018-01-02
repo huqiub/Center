@@ -6,8 +6,8 @@ public class DeviceDomain {
 	private String channalId;
 	private String imei;
 	private String imsi;
-	private String serailNo;
-	private String phoneNo;
+	private String serialno;
+	private String phoneno;
 
 	public long getId() {
 		return id;
@@ -41,20 +41,20 @@ public class DeviceDomain {
 		this.imsi = imsi;
 	}
 
-	public String getSerailNo() {
-		return serailNo;
+	public String getSerialno() {
+		return serialno;
 	}
 
-	public void setSerailNo(String serailNo) {
-		this.serailNo = serailNo;
+	public void setSerialno(String serialno) {
+		this.serialno = serialno;
 	}
 
-	public String getPhoneNo() {
-		return phoneNo;
+	public String getPhoneno() {
+		return phoneno;
 	}
 
-	public void setPhoneNo(String phoneNo) {
-		this.phoneNo = phoneNo;
+	public void setPhoneno(String phoneno) {
+		this.phoneno = phoneno;
 	}
 
 }

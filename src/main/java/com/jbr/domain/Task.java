@@ -1,16 +1,13 @@
-package com.jbr.entity;
+package com.jbr.domain;
 
-import java.io.Serializable;
 import java.util.Date;
 
-public class TaskEntity implements Serializable {
+public class Task {
 
-	private static final long serialVersionUID = 112110336617489761L;
 	private String id;
 	private long deviceId;
 	private int operation;
 	private int scriptId;
-	private String downloadUrl;
 	private int status;
 	private String ip;
 
@@ -50,14 +47,6 @@ public class TaskEntity implements Serializable {
 
 	public void setScriptId(int scriptId) {
 		this.scriptId = scriptId;
-	}
-
-	public String getDownloadUrl() {
-		return downloadUrl;
-	}
-
-	public void setDownloadUrl(String downloadUrl) {
-		this.downloadUrl = downloadUrl;
 	}
 
 	public int getStatus() {
