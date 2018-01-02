@@ -8,210 +8,104 @@
     <link rel="stylesheet" type="text/css" href="../static/easyui/themes/color.css" th:href="@{easyui/themes/color.css}"/>  
     <script type="text/javascript" src="../static/jquery/jquery.min.js" th:src="@{jquery/jquery.min.js}"></script>  
     <script type="text/javascript" src="../static/easyui/jquery.easyui.min.js" th:src="@{easyui/jquery.easyui.min.js}"></script>  
+<style>
+  article, aside, figure, footer, header, hgroup, 
+  menu, nav, section { display: block; }
+  .west{
+    width:200px;
+    padding:10px;
+  }
+  .north{
+    height:100px;
+  }
+</style>
 </head>  
 <body class="easyui-layout">
-	<div data-options="region:'north',border:false" style="height:60px;background:#B3DFDA;padding:10px"></div>
-	<div data-options="region:'west',split:true,title:'West'" style="width:150px;padding:10px;">
-<!-- 		<a href="getDevice.html" target="main">获取设备</a> -->
-	
-	</div>
-	<div data-options="region:'east',split:true,collapsed:true,title:'East'" style="width:100px;padding:10px;">east region</div>
-	<div data-options="region:'south',border:false" style="height:50px;padding:10px;">south region</div>
-	<div data-options="region:'center',title:'Center'">
-		
-		<div class="easyui-tabs" data-options="fit:true,border:false,plain:true">
-		
-			<div title="获取设备" style="padding:10px">
-				<div class="easyui-panel" style="width:400px">
-					<div style="padding:10px 60px 20px 60px">
-					    <form id="fff" class="easyui-form" method="post" data-options="novalidate:true">
-					    	<table cellpadding="2">
-					    		<tr>
-					    			<td>获取数量:</td>
-					    			<td><input class="easyui-textbox" type="text" name="count" data-options="required:true"></input></td>
-					    		</tr>
-					    		<tr>
-					    			<td>是否绑定账号：</td>
-       								<td>
-					    			<span class="radioSpan">
-						                <input type="radio" name="band" value="1" >是</input>
-						                <input type="radio" name="band" value="0" checked="checked">否</input>
-						            </span>
-						            </td>
-					    		</tr>
-					    	</table>
-					    </form>
-					    <div style="text-align:center;padding:5px">
-					    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="submitForm()">Submit</a>
-					    	<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
-					    </div>
-				    </div>
-				</div>
-			</div>
-			<div class="easyui-panel" title="Ajax Form" style="width:800px;padding:10px;">
-				<div style="margin:10px 0;">
-					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="loadLocal()">LoadLocal</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="loadRemote()">LoadRemote</a>
-					<a href="javascript:void(0)" class="easyui-linkbutton" onclick="clearForm()">Clear</a>
-				</div>
-	         <form id="ff" action="form1_proc.php" method="post" enctype="multipart/form-data">
-	            <table>
-	            	<tr>
-	                    <td>无账号比例:</td>
-	                    <td><input id="m1" name="m1" class="f1 easyui-textbox"></input></td>
-	                </tr>
-	                <tr>
-	                    <td>七日留存率:</td>
-	                    <td><input id="m2" name="m2" class="f1 easyui-textbox"></input></td>
-	                </tr>
-	                <tr>
-	                    <td>异常时间访问率:</td>
-	                    <td><input id="m3" name="m3" class="f1 easyui-textbox"></input></td>
-	                </tr>
-	             </table>
-	                <hr />
-	             <table>
-	                <tr>
-	                    <td>有账户,七日留存=否,异常时段=是:</td>
-	                    <td><input id="m4" name="m4" class="f1 easyui-textbox"></input></td>
-	                </tr>
-	                <tr>
-	                    <td>有账户,七日留存=否,异常时段=否:</td>
-	                    <td><input id="m5" name="m5" class="f1 easyui-textbox"></input></td>
-	                </tr>
-	                <tr>
-	                    <td>有账户,七日留存=是,异常时段=是:</td>
-	                    <td><input id="m6" name="m6" class="f1 easyui-textbox"></input></td>
-	                </tr>
-	                 <tr>
-	                    <td>有账户,七日留存=是,异常时段=否:</td>
-	                    <td><input id="m7" name="m7" class="f1 easyui-textbox"></input></td>
-	                </tr>
-	             </table>
-	             <hr />
-	             <table>
-	                <tr>
-	                    <td>无账户,七日留存=是,异常时段=是:</td>
-	                    <td><input id="m8" name="m8" class="f1 easyui-textbox"></input>
-	                    <label id="lm8" style="color: red"></label></td>
-	                </tr>
-	                <tr>
-	                    <td>无账户,七日留存=是,异常时段=否:</td>
-	                    <td><input id="m9" name="m9" class="f1 easyui-textbox"></input>
-	                    <label id="lm9" style="color: red"></label></td>
-	                </tr>
-	                <tr>
-	                    <td>无账户,七日留存=否,异常时段=否:</td>
-	                    <td><input id="m10" name="m10" class="f1 easyui-textbox"></input>
-	                    <label id="lm10" style="color: red"></label>
-	                    </td>
-	                </tr>
-	                 <tr>
-	                    <td>无账户,七日留存=否,异常时段=是:</td>
-	                    <td><input id="m11" name="m11" class="f1 easyui-textbox"></input>
-	                     <label id="lm11" style="color: red"></label>
-	                    </td>
-	                </tr>
-	                <tr>
-	                    <td></td>
-	                    <td><a href="javascript:void(0)" class="easyui-linkbutton" onclick="test()" style="width:80px">无账号比例</a>
-	                    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="test2()" style="width:80px">七日留存率</a>
-	                    <a href="javascript:void(0)" class="easyui-linkbutton" onclick="test3()" style="width:100px">异常时间访问率</a></td>
-                	</tr>
-	            </table>
-	            
-	        </form>
-    	</div>
-    	 </div>
+  <div region="north" class="north" title="TEST">
+    <h1>JBR</h1>
+  </div>
+    <div id="tabs" region="center"  class="easyui-tabs" fit="true" border="false">
+      <div title="首页"></div>
     </div>
+  <div region="west" class="west" title="menu">
+    <ul class="easyui-tree" id="tt">
+    </ul>
+  </div>
+  
+  <div id="tabsMenu" class="easyui-menu" style="width:120px;">  
+    <div name="close">关闭</div>  
+    <div name="Other">关闭其他</div>  
+    <div name="All">关闭所有</div>
+  </div>
 
-  <script type="text/javascript">
-  	function test(){
-		
-		var m1 = Number($("#m1").val());
-		var m2 = Number($("#m2").val());
-		var m3 = Number($("#m3").val());
-		var m4 = Number($("#m4").val());
-		var m5 = Number($("#m5").val());
-		var m6 = Number($("#m6").val());
-		var m7 = Number($("#m7").val());
-		var m8 = Number($("#m8").val());
-		var m9 = Number($("#m9").val());
-		var m10 = Number($("#m10").val());
-		var m11 = Number($("#m11").val());
-		var noUserTotal = m8+m9+m10+m11;
-		var hasUserTotal = m4+m5+m6+m7;
-		var total = noUserTotal+hasUserTotal;
-		if((noUserTotal/total)>m1){
-			var needReject = noUserTotal-(total*m1);
-			var needRejectAgain = needReject-m11;
-			if(needRejectAgain>=0){
-				$("#lm11").text(needReject.toString()+"-"+m11.toString()+"="+needRejectAgain);
-				var needRejectAgain2 = needRejectAgain-m10;
-				if(needRejectAgain2>=0){
-					$("#lm10").text(needRejectAgain.toString()+"-"+m10.toString()+"="+needRejectAgain2);
-					var needRejectAgain3 = needRejectAgain2-m8;
-					if(needRejectAgain3>=0){
-						$("#lm8").text(needRejectAgain2.toString()+"-"+m8.toString()+"="+needRejectAgain3);
-						var needRejectAgain4 = needRejectAgain3-m9;
-						if(needRejectAgain4>=0){
-							$("#lm9").text(needRejectAgain3.toString()+"-"+m9.toString()+"="+needRejectAgain4);
-						}else{
-							$("#lm9").text(needRejectAgain3);
-						}
-					}else{
-						$("#lm8").text(needRejectAgain2);
-					}
-				}else{
-					$("#lm10").text(needRejectAgain);
-				}
-			}else{
-				$("#lm11").text(needReject);
-			}
-			
-			$("#m11").val("0");
-		}else{
-			alert("无需剔除");
-		}
-	}
-  	
-  	function test2(){
-  		alert($("#m11").val());
-  	}
-  	
-  	
-	function loadLocal(){
-		$('#ff').form('load',{
-			m1:'0.5',
-			m2:'0.9',
-			m3:'0.1',
-			m4:'300',
-			m5:'700',
-			m6:'200',
-			m7:'2800',
-			m8:'200',
-			m9:'2800',
-			m10:'2500',
-			m11:'500'
-				
-		});
-	}
-	function loadRemote(){
-		$('#ff').form('load', 'form_data1.json');
-	}
-	function clearForm(){
-		$('#ff').form('clear');
-	}
-	
-	function submitForm(){
-		$('#fff').form('submit', {
-			url:"/getDevice",
-			success:function(data){
-				alert("成功");
-		    }
-		});
-	}
-	
-	</script>
-</body> 
+<script type="text/javascript">
+
+$(function () {  
+	 //动态菜单数据
+    var treeData = [{
+            text : "菜单",
+            children : [{
+                    text : "获取设备",
+                    attributes : {
+                        url : "/getDeviceIndex"
+                    }
+                }, {
+                    text : "规划计算",
+                    attributes : {
+                        url : "/planIndex"
+                    }
+                }
+            ]
+        }
+    ];
+	 
+    //处理树型菜单点击事件  
+    $('#tt').tree({  
+    	 data : treeData,
+         onClick: function (node) {  
+            addtab(node.text, node.attributes.url);  
+        }  
+    });  
+
+    var addtab = function (title, url) {  
+
+        if ($('#tabs').tabs('exists', title)) {  
+            $('#tabs').tabs('select', title);  
+        } else {  
+            $('#tabs').tabs('add', {  
+                title: title,  
+                closable: true,  
+                content: createFrame(url), 
+                //href: url,  
+            });  
+        }  
+    }  
+
+    function createFrame(url) {  
+        var s = '<iframe scrolling="auto" frameborder="0" src="'+url+'" style="width:100%;height:99%;"></iframe>';  
+        return s;  
+    }  
+    
+  //绑定tabs的右键菜单
+    $("#tabs").tabs({
+        onContextMenu : function (e, title) {
+            e.preventDefault();
+            $('#tabsMenu').menu('show', {
+                left : e.pageX,
+                top : e.pageY
+            }).data("tabTitle", title);
+        }
+    });
+    
+    //实例化menu的onClick事件
+    $("#tabsMenu").menu({
+        onClick : function (item) {
+            CloseTab(this, item.name);
+        }
+    });
+    
+
+}); 
+</script>
+ </body>
 </html> 
